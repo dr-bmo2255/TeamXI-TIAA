@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TIAA | Build Your Family's Future</title>
+<meta name="description" content="A simple bilingual calculator and game that shows how saving early builds security for your family and for generations.">
+<style>
+  :root{
+    --navy:#0b2a4a;
+    --navy-2:#123a63;
+    --teal:#00a3ad;
+    --teal-2:#4fd1d9;
+    --gold:#f2a900;
+    --bg:#f4f7fa;
+    --card:#ffffff;
+    --ink:#14212e;
+    --muted:#5b6b7b;
+    --line:#dde5ec;
+    --good:#1f9d63;
+    --bad:#c8443a;
+    --break:#f6e7c8;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(11,42,74,.06),0 6px 20px rgba(11,42,74,.08);
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input,select{font:inherit}
+  a{color:var(--navy-2)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+  /* Header */
+  header{background:#fff;color:var(--navy);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:76px}
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--navy);min-width:0}
+  .tiaa-logo{height:44px;width:auto;flex:none;display:block}
+  .brand small{font-size:13px;color:var(--muted);border-left:1px solid var(--line);padding-left:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* Language switch */
+  .lang{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--navy);cursor:pointer;padding:6px 4px;font-weight:700;font-size:14px;flex:none}
+  .lang .opt{opacity:.45;transition:opacity .15s}
+  .lang .opt.on{opacity:1}
+  .lang .track{width:44px;height:24px;border-radius:999px;background:#c5d0db;position:relative;transition:background .2s}
+  .lang .knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .lang[aria-checked="true"] .track{background:var(--teal)}
+  .lang[aria-checked="true"] .knob{transform:translateX(20px)}
+  .lang:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 60%,#0f5a73 100%);color:#fff;padding:36px 0 84px}
+  .hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.1;margin:0 0 10px;max-width:760px}
+  .hero h1 span{color:var(--teal-2)}
+  .hero p{margin:0;color:#cfdbe7;max-width:640px;font-size:17px}
+  .values{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding:0;list-style:none}
+  .values li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:#e6eef5}
+
+  /* Tabs */
+  .tabs{display:flex;gap:6px;margin-top:-56px;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;white-space:nowrap;
+    border:0;cursor:pointer;padding:12px 18px;border-radius:12px 12px 0 0;
+    background:rgba(255,255,255,.12);color:#fff;font-weight:600;
+  }
+  .tab[aria-selected="true"]{background:var(--card);color:var(--navy)}
+  .tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .panel{display:none;background:var(--card);border-radius:0 var(--radius) var(--radius) var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:28px}
+  .panel.active{display:block}
+
+  h2{margin:0 0 4px;font-size:22px;color:var(--navy)}
+  h3{color:var(--navy)}
+  .sub{margin:0 0 20px;color:var(--muted)}
+
+  /* Explainer */
+  .explain{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;background:linear-gradient(135deg,#eef9fa,#f3f6fb);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:28px}
+  .explain h2{font-size:20px}
+  .explain p{margin:8px 0 0}
+  .aka{font-size:13px;color:var(--muted)}
+  .steps{display:grid;gap:8px;align-content:start}
+  .step{display:grid;grid-template-columns:72px 1fr auto;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:10px 12px;border:1px solid var(--line)}
+  .step .yr{font-weight:700;font-size:13px;color:var(--muted)}
+  .step .what{font-size:14px}
+  .step .amt{font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+  .step .earn{color:var(--teal);font-weight:700}
+  .step.big{background:var(--navy);border-color:var(--navy)}
+  .step.big .yr,.step.big .what{color:#cfdbe7}
+  .step.big .amt{color:#fff;font-size:18px}
+
+  /* Calculator */
+  .calc{display:grid;grid-template-columns:340px 1fr;gap:28px}
+  .field{margin-bottom:18px}
+  .field label,.field .lbl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:600;font-size:14px;margin-bottom:6px}
+  .field output{font-variant-numeric:tabular-nums;color:var(--navy);font-weight:700;white-space:nowrap}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:2px}
+  input[type=range]{width:100%;accent-color:var(--teal);height:28px}
+
+  .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .seg button{
+    border:2px solid var(--line);background:#fff;border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;color:var(--ink);
+  }
+  .seg button b{display:block;color:var(--navy);font-size:15px}
+  .seg button span{display:block;font-size:12px;color:var(--muted)}
+  .seg button[aria-checked="true"]{border-color:var(--teal);background:#e9f8f9}
+  .seg button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+  .rates{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:18px;background:#fbfcfd}
+  .rates h3{margin:0 0 8px;font-size:15px}
+  .rate{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line)}
+  .rate:first-of-type{border-top:0}
+  .rate .nm{font-weight:700;font-size:14px}
+  .rate .pct{font-weight:800;color:var(--teal);font-size:18px;font-variant-numeric:tabular-nums;grid-row:span 2;align-self:center}
+  .rate .ds{font-size:12.5px;color:var(--muted)}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .stat{background:var(--bg);border-radius:12px;padding:12px 14px}
+  .stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:6px}
+  .stat .v{font-size:clamp(18px,2.6vw,26px);font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}
+  .stat.total{background:var(--navy)}
+  .stat.total .k{color:#b9cadb}.stat.total .v{color:#fff}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+  .chartbox{position:relative}
+  canvas{display:block;width:100%;height:300px}
+  .chartlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+  .chartlegend span{display:inline-flex;align-items:center;gap:6px}
+  .tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;font-size:13px;padding:8px 10px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-110%);opacity:0;transition:opacity .12s}
+  .tip b{font-variant-numeric:tabular-nums}
+  .insight{margin-top:14px;padding:12px 14px;border-left:4px solid var(--teal);background:#eef9fa;border-radius:8px;font-size:15px}
+
+  /* Game */
+  .gamehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:var(--bg);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px;color:var(--navy);font-variant-numeric:tabular-nums}
+  .pill.gold{background:#fff4d6;color:#8a5e00}
+  .scenario{background:linear-gradient(135deg,#eef9fa,#f3f6fb);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+  .scenario .who{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .scenario .q{font-size:clamp(18px,2.4vw,22px);font-weight:700;color:var(--navy);margin-top:6px}
+  .scenario .q em{font-style:normal;color:var(--teal)}
+  .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .choice{
+    border:2px solid var(--line);background:#fff;border-radius:12px;padding:16px;cursor:pointer;
+    font-size:20px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;transition:transform .08s,border-color .15s,background .15s;
+  }
+  .choice:hover:not(:disabled){border-color:var(--teal);transform:translateY(-1px)}
+  .choice:disabled{cursor:default}
+  .choice.right{border-color:var(--good);background:#e8f7ef;color:var(--good)}
+  .choice.wrong{border-color:var(--bad);background:#fbeceb;color:var(--bad)}
+  .reveal{margin-top:16px;display:none}
+  .reveal.show{display:block}
+  .verdict{font-size:20px;font-weight:800;margin:0 0 8px}
+  .verdict.ok{color:var(--good)}.verdict.no{color:var(--bad)}
+  .split{height:22px;border-radius:999px;overflow:hidden;display:flex;background:var(--bg);margin:10px 0 6px}
+  .split div{height:100%;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .legend b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .btn{border:0;border-radius:10px;padding:12px 20px;font-weight:700;cursor:pointer;background:var(--teal);color:#fff}
+  .btn:hover{filter:brightness(1.05)}
+  .btn.ghost{background:transparent;color:var(--navy);border:2px solid var(--line)}
+  .btnrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .final{text-align:center;padding:24px 8px}
+  .final .big{font-size:56px;font-weight:900;color:var(--navy);line-height:1}
+  .final p{color:var(--muted)}
+
+  /* Race */
+  .racegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:12px}
+  .racer{border:1px solid var(--line);border-radius:14px;padding:16px}
+  .racer h3{margin:0 0 10px;font-size:17px;display:flex;align-items:center;gap:8px}
+  .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .track{margin-top:6px}
+  .lane{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:10px;margin:10px 0}
+  .lane .nm{font-weight:700;font-size:14px}
+  .lanebar{height:36px;background:var(--bg);border-radius:10px;position:relative;overflow:hidden}
+  .lanebar .fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:10px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:0}
+  .agebadge{font-size:40px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+  .raceinfo{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  footer{color:var(--muted);font-size:12px;padding:8px 0 40px}
+  .credits{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:18px;padding-top:18px}
+  .credits .by{font-size:12px;color:var(--muted)}
+  .credits svg{display:block;width:auto}
+  .teamxi{height:44px}
+  .yalesom{height:34px}
+  .notice{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:12.5px}
+  footer p{margin:6px 0;max-width:860px}
+
+  @media (max-width:820px){
+    .calc,.explain{grid-template-columns:1fr}
+    .racegrid{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stat.total{grid-column:1/-1}
+    .choices{grid-template-columns:1fr}
+    .panel{padding:18px}
+    .brand small{display:none}
+    .tiaa-logo{height:36px}
+    .tab{padding:10px 10px;font-size:13px}
+    .lane{grid-template-columns:70px 1fr}
+    .step{grid-template-columns:60px 1fr auto}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#" aria-label="TIAA">
+      <svg class="tiaa-logo" viewBox="0 0 290 76" role="img" aria-label="TIAA">
+        <path fill="#2f5bea" d="M26 6H62Q72 6 72 16V24H32V46H14V18Q14 6 26 6Z"/>
+        <path fill="#16a58a" d="M54 24H72V58Q72 70 60 70H54Z"/>
+        <path fill="#0d1b5c" d="M14 46H32V52H54V70H26L5 55Q1 50 8 47Z"/>
+        <g fill="#0d1b5c">
+          <rect x="92" y="12" width="48" height="13"/><rect x="109" y="12" width="14" height="56"/>
+          <rect x="148" y="12" width="14" height="56"/>
+          <path fill-rule="evenodd" d="M168 68L188 12H204L224 68H209L204 54H188L183 68ZM192 42H200L196 29Z"/>
+          <path fill-rule="evenodd" d="M226 68L246 12H262L282 68H267L262 54H246L241 68ZM250 42H258L254 29Z"/>
+        </g>
+      </svg>
+      <small data-i18n="brandSub"></small>
+    </a>
+    <button class="lang" id="lang" role="switch" aria-checked="false" aria-label="Español">
+      <span class="opt" id="lang-en" lang="en">EN</span>
+      <span class="track" aria-hidden="true"><span class="knob"></span></span>
+      <span class="opt" id="lang-es" lang="es">ES</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1 data-i18n="heroH"></h1>
+    <p data-i18n="heroP"></p>
+    <ul class="values">
+      <li data-i18n="v1"></li><li data-i18n="v2"></li><li data-i18n="v3"></li><li data-i18n="v4"></li>
+    </ul>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" aria-controls="p-calc" id="t-calc" data-i18n="tab1"></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p-game" id="t-game" data-i18n="tab2"></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p-race" id="t-race" data-i18n="tab3"></button>
+  </div>
+
+  <!-- CALCULATOR -->
+  <section class="panel active" id="p-calc" role="tabpanel" aria-labelledby="t-calc">
+
+    <div class="explain">
+      <div>
+        <h2 data-i18n="exH"></h2>
+        <div class="aka" data-i18n="exAka"></div>
+        <p data-i18n="exP1"></p>
+        <p data-i18n="exP2"></p>
+        <p data-i18n="exP3"></p>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="yr" data-i18n="stStart"></span><span class="what" data-i18n="st0"></span><span class="amt">$1,000</span></div>
+        <div class="step"><span class="yr" data-i18n="stY1"></span><span class="what" data-i18n="st1"></span><span class="amt">$1,060</span></div>
+        <div class="step"><span class="yr" data-i18n="stY2"></span><span class="what" data-i18n="st2"></span><span class="amt">$1,124</span></div>
+        <div class="step"><span class="yr" data-i18n="stY10"></span><span class="what" data-i18n="st10"></span><span class="amt">$1,791</span></div>
+        <div class="step big"><span class="yr" data-i18n="stY30"></span><span class="what" data-i18n="st30"></span><span class="amt">$5,743</span></div>
+      </div>
+    </div>
+
+    <h2 data-i18n="calcH"></h2>
+    <p class="sub" data-i18n="calcSub"></p>
+    <div class="calc">
+      <div>
+        <div class="field">
+          <label for="c-start"><span data-i18n="lStart"></span> <output id="o-start"></output></label>
+          <input type="range" id="c-start" min="16" max="60" step="1" value="25">
+        </div>
+        <div class="field">
+          <label for="c-retire"><span data-i18n="lRetire"></span> <output id="o-retire"></output></label>
+          <input type="range" id="c-retire" min="50" max="75" step="1" value="67">
+        </div>
+        <div class="field">
+          <label for="c-break"><span data-i18n="lBreak"></span> <output id="o-break"></output></label>
+          <input type="range" id="c-break" min="0" max="15" step="1" value="0">
+          <div class="hint" id="h-break"></div>
+        </div>
+        <div class="field">
+          <label for="c-init"><span data-i18n="lInit"></span> <output id="o-init"></output></label>
+          <input type="range" id="c-init" min="0" max="100000" step="500" value="1000">
+        </div>
+        <div class="field">
+          <label for="c-month"><span data-i18n="lMonth"></span> <output id="o-month"></output></label>
+          <input type="range" id="c-month" min="0" max="2000" step="25" value="200">
+          <div class="hint" data-i18n="hMonth"></div>
+        </div>
+
+        <div class="rates">
+          <h3 data-i18n="ratesH"></h3>
+          <div class="rate"><span class="nm">TIAA Traditional</span><span class="pct">~3%</span><span class="ds" data-i18n="rTradDs"></span></div>
+          <div class="rate"><span class="nm">TIAA-CREF Lifecycle 2040 Fund</span><span class="pct">~8%</span><span class="ds" data-i18n="rLifeDs"></span></div>
+        </div>
+
+        <div class="field">
+          <span class="lbl" id="l-growth" data-i18n="lGrowth"></span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-growth" id="c-growth">
+            <button type="button" role="radio" data-rate="4" aria-checked="false"><b data-i18n="low"></b><span data-i18n="about4"></span></button>
+            <button type="button" role="radio" data-rate="6" aria-checked="true"><b data-i18n="med"></b><span data-i18n="about6"></span></button>
+            <button type="button" role="radio" data-rate="8" aria-checked="false"><b data-i18n="high"></b><span data-i18n="about8"></span></button>
+          </div>
+          <div class="hint" data-i18n="hGrowth"></div>
+        </div>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><div class="k"><span class="dot" style="background:var(--navy-2)"></span><span data-i18n="sContrib"></span></div><div class="v" id="s-contrib">$0</div></div>
+          <div class="stat"><div class="k"><span class="dot" style="background:var(--teal)"></span><span data-i18n="sGrowth"></span></div><div class="v" id="s-growth">$0</div></div>
+          <div class="stat total"><div class="k" id="s-total-k"></div><div class="v" id="s-total">$0</div></div>
+        </div>
+        <div class="chartbox">
+          <canvas id="chart" role="img"></canvas>
+          <div class="tip" id="tip"></div>
+        </div>
+        <div class="chartlegend">
+          <span><span class="dot" style="background:var(--navy-2)"></span><span data-i18n="sContrib"></span></span>
+          <span><span class="dot" style="background:var(--teal)"></span><span data-i18n="sGrowth"></span></span>
+          <span id="lg-break"><span class="dot" style="background:var(--break)"></span><span data-i18n="lgBreak"></span></span>
+        </div>
+        <div class="insight" id="insight"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="panel" id="p-game" role="tabpanel" aria-labelledby="t-game">
+    <div class="gamehead">
+      <div>
+        <h2 data-i18n="gH"></h2>
+        <p class="sub" style="margin:0" data-i18n="gSub"></p>
+      </div>
+      <div class="pills">
+        <span class="pill" id="g-round"></span>
+        <span class="pill gold" id="g-score"></span>
+        <span class="pill" id="g-streak"></span>
+      </div>
+    </div>
+    <div id="g-play">
+      <div class="scenario">
+        <div class="who" id="g-who"></div>
+        <div class="q" id="g-q"></div>
+      </div>
+      <div class="choices" id="g-choices"></div>
+      <div class="reveal" id="g-reveal">
+        <p class="verdict" id="g-verdict"></p>
+        <div class="split"><div id="g-bar-c" style="background:var(--navy-2)"></div><div id="g-bar-g" style="background:var(--teal)"></div></div>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--navy-2)"></span> <span data-i18n="gC"></span> <b id="g-c"></b></span>
+          <span><span class="dot" style="background:var(--teal)"></span> <span data-i18n="sGrowth"></span> <b id="g-g"></b></span>
+        </div>
+        <p id="g-lesson" style="margin:12px 0 0"></p>
+        <div class="btnrow"><button class="btn" id="g-next"></button></div>
+      </div>
+    </div>
+    <div id="g-final" class="final" hidden>
+      <div class="sub" style="margin:0 0 6px" data-i18n="gFinal"></div>
+      <div class="big" id="g-finalscore">0</div>
+      <p id="g-finalmsg"></p>
+      <div class="btnrow" style="justify-content:center">
+        <button class="btn" id="g-again" data-i18n="gAgain"></button>
+        <button class="btn ghost" id="g-tocalc" data-i18n="gToCalc"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACE -->
+  <section class="panel" id="p-race" role="tabpanel" aria-labelledby="t-race">
+    <h2 data-i18n="rH"></h2>
+    <p class="sub" data-i18n="rSub"></p>
+    <div class="racegrid">
+      <div class="racer">
+        <h3><span class="avatar" style="background:var(--teal)">A</span> <span data-i18n="rAnaH"></span></h3>
+        <div class="field"><label for="r-a-start"><span data-i18n="rStartsAt"></span> <output id="o-a-start"></output></label><input type="range" id="r-a-start" min="18" max="40" value="25"></div>
+        <div class="field"><label for="r-a-yrs"><span data-i18n="rSavesFor"></span> <output id="o-a-yrs"></output></label><input type="range" id="r-a-yrs" min="1" max="20" value="10"></div>
+      </div>
+      <div class="racer">
+        <h3><span class="avatar" style="background:var(--navy-2)">J</span> <span data-i18n="rJulH"></span></h3>
+        <div class="field"><label for="r-j-start"><span data-i18n="rStartsAt"></span> <output id="o-j-start"></output></label><input type="range" id="r-j-start" min="20" max="60" value="35"></div>
+        <div class="field"><span class="lbl" data-i18n="rJLabel"></span><div class="sub" style="margin:0" id="o-j-yrs"></div></div>
+      </div>
+    </div>
+    <div class="racegrid">
+      <div class="field" style="margin:0"><label for="r-amt"><span data-i18n="rAmt"></span> <output id="o-amt"></output></label><input type="range" id="r-amt" min="50" max="1500" step="50" value="300"></div>
+      <div class="field" style="margin:0">
+        <span class="lbl" id="l-rgrowth" data-i18n="rGrowth"></span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-rgrowth" id="r-growth">
+          <button type="button" role="radio" data-rate="4" aria-checked="false"><b data-i18n="low"></b><span>~4%</span></button>
+          <button type="button" role="radio" data-rate="6" aria-checked="true"><b data-i18n="med"></b><span>~6%</span></button>
+          <button type="button" role="radio" data-rate="8" aria-checked="false"><b data-i18n="high"></b><span>~8%</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btnrow" id="r-predict">
+      <span style="align-self:center;font-weight:700;color:var(--navy)" data-i18n="rWho"></span>
+      <button class="btn ghost" data-pick="A">Ana</button>
+      <button class="btn ghost" data-pick="J">Julia</button>
+    </div>
+
+    <div class="track">
+      <div class="raceinfo">
+        <div><div class="sub" style="margin:0" data-i18n="rAge"></div><div class="agebadge" id="r-age">25</div></div>
+        <button class="btn" id="r-go" data-i18n="rGo"></button>
+      </div>
+      <div class="lane"><div class="nm">Ana</div><div class="lanebar"><div class="fill" id="r-fill-a" style="background:var(--teal)"></div></div></div>
+      <div class="lane"><div class="nm">Julia</div><div class="lanebar"><div class="fill" id="r-fill-j" style="background:var(--navy-2)"></div></div></div>
+      <div class="insight" id="r-result" hidden></div>
+    </div>
+  </section>
+
+  <footer>
+    <p data-i18n="f1"></p>
+    <p data-i18n="f2"></p>
+    <div class="credits">
+      <span class="by" data-i18n="by1"></span>
+      <svg class="teamxi" viewBox="0 0 380 90" role="img" aria-label="Ctrl Alt Win, Team 11">
+        <rect width="380" height="90" rx="6" fill="#1d2b4c"/>
+        <g fill="#e9dfc8" font-family="Georgia,'Times New Roman',serif" text-anchor="middle">
+          <text x="150" y="47" font-size="32" letter-spacing="2">CTRL·ALT·WIN</text>
+          <text x="150" y="74" font-size="13" letter-spacing="4">TEAM 11</text>
+        </g>
+        <g stroke="#e9dfc8" stroke-width="1.5"><line x1="36" y1="69" x2="108" y2="69"/><line x1="192" y1="69" x2="264" y2="69"/></g>
+        <path d="M306 12H364V50Q364 70 335 80Q306 70 306 50Z" fill="none" stroke="#e9dfc8" stroke-width="3"/>
+        <text x="335" y="58" font-family="Georgia,'Times New Roman',serif" font-size="32" fill="#e9dfc8" text-anchor="middle">XI</text>
+      </svg>
+      <span class="by" data-i18n="by2"></span>
+      <svg class="yalesom" viewBox="0 0 385 64" role="img" aria-label="Yale School of Management">
+        <path d="M4 4H48V36Q48 54 26 62Q4 54 4 36Z" fill="#0f2c5c"/>
+        <path d="M11 9H25V22H11ZM27 9H41V22H27Z" fill="#fff"/>
+        <g fill="#7f9cc4"><path d="M26 27L31 33L26 39L21 33Z"/><path d="M16 33L21 39L16 45L11 39Z" opacity=".8"/><path d="M36 33L41 39L36 45L31 39Z" opacity=".8"/><path d="M26 41L31 47L26 53L21 47Z"/></g>
+        <text x="60" y="44" font-family="Georgia,'Times New Roman',serif" font-size="34" fill="#0f2c5c">Yale</text>
+        <text x="136" y="42" font-family="Georgia,'Times New Roman',serif" font-size="17" letter-spacing="1" fill="#7f9cc4">SCHOOL OF MANAGEMENT</text>
+      </svg>
+    </div>
+    <p class="notice" data-i18n="notice"></p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var money = function(v){ return "$" + Math.round(v).toLocaleString("en-US"); };
+  var short = function(v){
+    var a = Math.abs(v);
+    if(a >= 1e6) return "$" + (v/1e6).toFixed(a >= 1e7 ? 1 : 2).replace(/\.0+$/,"") + "M";
+    if(a >= 1e3) return "$" + Math.round(v/1e3) + "K";
+    return "$" + Math.round(v);
+  };
+  var cssVar = function(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); };
+
+  /* ================= Text: English & Spanish ================= */
+  var STR = {
+    en: {
+      title: "TIAA | Build Your Family's Future",
+      brandSub: "Retirement learning center",
+      heroH: "Security for your family today. <span>Wealth for generations to come.</span>",
+      heroP: "Every dollar you save is a decision you make for yourself and the people you love. Small, steady steps grow into something lasting, something that's yours.",
+      v1: "Protect your family", v2: "Own your decisions", v3: "Build independence", v4: "Leave a legacy",
+      tab1: "Plan your future", tab2: "Guess the total", tab3: "Start early vs. start late",
+
+      exH: "How does your money grow on its own?",
+      exAka: "Financial experts call this “compound growth.”",
+      exP1: "When you save for retirement, your money is invested. Each year it earns a little extra. That extra stays in your account and <strong>starts earning money too</strong>.",
+      exP2: "Think of a snowball rolling downhill. It starts small, but it picks up more snow with every turn, and the bigger it gets, the faster it grows. The key ingredient is <strong>time</strong>. Starting early, even with small amounts, gives your money more years to work for you.",
+      exP3: "What you build today can protect your independence, support the people who count on you, and become something you pass on.",
+      stStart: "Start", stY1: "Year 1", stY2: "Year 2", stY10: "Year 10", stY30: "Year 30",
+      st0: "You save once",
+      st1: 'It earns <span class="earn">+$60</span>',
+      st2: 'Now it earns <span class="earn">+$64</span>, because there’s more money',
+      st10: 'It earns <span class="earn">+$101</span> this year',
+      st30: "You never added another penny",
+
+      calcH: "Your plan, your decisions",
+      calcSub: "You’re in charge. Move the sliders to see what you could build by retirement.",
+      lStart: "Age you started working",
+      lRetire: "Age you plan to retire",
+      lBreak: "Years you plan to take off to raise a family",
+      lInit: "Money you already have saved for retirement, or plan to put in to open your account",
+      lMonth: "How much you’ll save each month",
+      hMonth: "Many employers add money to your account too. If yours does, include it here.",
+      hBreak: "Life happens. You stop adding money during this time, but what you’ve already saved keeps working for you.",
+      hBreakAt: function(a,b){ return "We’ve assumed this is from age " + a + " to " + b + ". You stop adding money then, but what you’ve already saved keeps working for you."; },
+      none: "None",
+      years: function(n){ return n + (n === 1 ? " year" : " years"); },
+      ratesH: "What do TIAA accounts typically earn?",
+      rTradDs: "A steady option with a guaranteed minimum that won’t lose value when the market drops. 3.00% guaranteed rate for one contract type through Feb. 2026.",
+      rLifeDs: "A “target date” fund for people retiring around 2040. It invests in the market, so it goes up and down. About 7.95% a year on average over the 10 years ending 2022.",
+      lGrowth: "How well do you think the market will do over your career?",
+      low: "Low", med: "Medium", high: "High",
+      about4: "about 4% a year", about6: "about 6% a year", about8: "about 8% a year",
+      hGrowth: "Not sure? Choose Medium. Markets have good years and bad years, so these are long-term averages.",
+      sContrib: "Money you put in", sGrowth: "Extra from growth",
+      sTotal: function(a){ return "What you’d have at " + a; },
+      lgBreak: "Time off for family",
+      chartAria: "Chart of savings by age, split into money put in and growth",
+      age: function(a){ return "Age " + a; },
+      tipIn: "put in", tipGrowth: "growth",
+      insEmpty: "Add some savings above to see what you could build.",
+      insPerDollar: function(x){ return "For every <strong>$1</strong> you put in, you’d have about <strong>$" + x + "</strong> at retirement."; },
+      insCross: function(a){ return " By age <strong>" + a + "</strong>, what your money has earned is more than everything you put in."; },
+      insBreak: function(n, cost){ return " Your " + STR.en.years(n) + " with family cost about <strong>" + cost + "</strong> by retirement, but your savings kept growing the whole time."; },
+      insLegacy: " That’s security for you, freedom in your choices, and a foundation for your family.",
+
+      gH: "Guess the total",
+      gSub: "Five women, five savings stories. Guess how much each one built. Most people guess too low!",
+      round: function(n,t){ return "Round " + n + " / " + t; },
+      pts: function(n){ return n + " pts"; },
+      streak: function(n){ return "Streak " + n; },
+      careers: ["nurse","teacher","researcher","librarian","professor","social worker","lab technician","physician","school counselor","museum curator"],
+      growthWord: {4:"low", 6:"medium", 8:"high"},
+      gQ: function(m,y,g,r){ return "Saves <em>" + m + " a month</em> for <em>" + y + " years</em>, and the market grows at a <em>" + g + "</em> rate (about " + r + "% a year). How much does she build?"; },
+      gC: "Money she put in",
+      gRight: "Correct! +100",
+      gRightStreak: function(n,p){ return "Correct! " + n + " in a row, +" + p; },
+      gLow: "Not quite. Her money grew more than you guessed!",
+      gHigh: "Not quite. That’s a bit too high.",
+      gLessonContrib: function(nm,x){ return "That’s just the money " + nm + " put in, as if it never grew. Over time, growth turned it into <strong>" + x + "&times;</strong> as much."; },
+      gLesson: function(nm,c,t,x){ return nm + " put in " + c + ". Because her money kept earning money, it grew to " + t + ", <strong>" + x + "&times;</strong> what she saved. That’s real security she built for herself and her family."; },
+      gNext: "Next round", gSee: "See my score",
+      gFinal: "Final score", gAgain: "Play again", gToCalc: "Build your own plan",
+      gPerfect: "Perfect! You understand how time builds wealth.",
+      gGood: "Nice work. You have a good feel for how savings grow.",
+      gTry: "Almost everyone is surprised by how much money can grow. That’s why starting early matters.",
+      gBest: function(n){ return " Best streak: " + n + "."; },
+
+      rH: "Start early vs. start late: who builds more?",
+      rSub: "Ana starts saving young, saves for a few years, then stops. Julia starts later but keeps saving every year until she retires. Make your guess, then hit Race.",
+      rAnaH: "Ana starts early", rJulH: "Julia starts later",
+      rStartsAt: "Starts saving at age", rSavesFor: "Saves for",
+      rAyrs: function(n,e){ return STR.en.years(n) + " (stops at " + e + ")"; },
+      rJLabel: "Saves every year until age 67",
+      rJyrs: function(n){ return STR.en.years(n) + " of saving"; },
+      rAmt: "Each saves per month", rGrowth: "How well does the market do?",
+      rWho: "Who has more at 67?", rAge: "Age", rGo: "Race to 67",
+      rCalled: "You called it! ", rSurprise: "Surprise! ",
+      rMore: function(nm,hi,lo){ return "<strong>" + nm + " has more</strong>: " + hi + " vs. " + lo + ". "; },
+      rPutIn: function(a,ay,j,jy){ return "Ana put in " + a + " over " + STR.en.years(ay) + ". Julia put in " + j + " over " + STR.en.years(jy) + ". "; },
+      rAWins: function(d){ return "Ana saved <strong>" + d + " less</strong> and still came out ahead, because her money had more time to grow."; },
+      rJWins: function(a,j){ return "Julia’s steady saving paid off. But look at how much each of Ana’s dollars grew: <strong>" + a + "&times;</strong> vs. Julia’s <strong>" + j + "&times;</strong>. Starting early is powerful, and it’s never too late to start."; },
+      rTie: "The more time your money has, the more it grows.",
+
+      f1: "<strong>For illustrative and educational purposes only.</strong> These examples are hypothetical, assume the same growth every year, and do not reflect any specific investment, fees, taxes, or inflation. Actual results will vary and may be lower. Past performance does not guarantee future results. This tool is not investment advice.",
+      by1: "A student project by",
+      by2: "for",
+      notice: "<strong>Not an official TIAA product.</strong> Team XI is not affiliated with, endorsed by, or related to TIAA. TIAA names and logos belong to their owners and are used here for educational purposes only. This tool was created as part of a class project at the Yale School of Management.",
+      f2: "<strong>About the TIAA figures:</strong> TIAA Traditional rates are declared each year and differ by contract and by when money was added; the 3.00% shown is a guaranteed rate for one contract type (RCP) through February 28, 2026. The Lifecycle 2040 Fund figure is the Retirement Class average annual return for the 10 years ended December 31, 2022, from the fund’s SEC prospectus. Check tiaa.org or your plan statement for current rates."
+    },
+
+    es: {
+      title: "TIAA | Construya el futuro de su familia",
+      brandSub: "Centro de aprendizaje para la jubilación",
+      heroH: "Seguridad para su familia hoy. <span>Patrimonio para las generaciones que vienen.</span>",
+      heroP: "Cada dólar que ahorra es una decisión que usted toma por su futuro y por las personas que ama. Pasos pequeños y constantes se convierten en algo duradero, algo que es suyo.",
+      v1: "Proteja a su familia", v2: "Sus decisiones, su control", v3: "Construya independencia", v4: "Deje un legado",
+      tab1: "Planee su futuro", tab2: "Adivine el total", tab3: "Empezar temprano vs. tarde",
+
+      exH: "¿Cómo crece su dinero por sí solo?",
+      exAka: "Los expertos financieros lo llaman “interés compuesto.”",
+      exP1: "Cuando ahorra para la jubilación, su dinero se invierte. Cada año gana un poco más. Esa ganancia se queda en su cuenta y <strong>también empieza a ganar dinero</strong>.",
+      exP2: "Piense en una bola de nieve que rueda cuesta abajo. Empieza pequeña, pero con cada vuelta recoge más nieve, y mientras más grande es, más rápido crece. El ingrediente clave es el <strong>tiempo</strong>. Empezar temprano, aunque sea con poco, le da a su dinero más años para trabajar por usted.",
+      exP3: "Lo que construye hoy puede proteger su independencia, apoyar a quienes dependen de usted y convertirse en algo que deja a los suyos.",
+      stStart: "Inicio", stY1: "Año 1", stY2: "Año 2", stY10: "Año 10", stY30: "Año 30",
+      st0: "Ahorra una sola vez",
+      st1: 'Gana <span class="earn">+$60</span>',
+      st2: 'Ahora gana <span class="earn">+$64</span>, porque hay más dinero',
+      st10: 'Este año gana <span class="earn">+$101</span>',
+      st30: "Sin agregar ni un centavo más",
+
+      calcH: "Su plan, sus decisiones",
+      calcSub: "Usted tiene el control. Mueva los controles para ver lo que podría construir para su jubilación.",
+      lStart: "Edad en que empezó a trabajar",
+      lRetire: "Edad en que planea jubilarse",
+      lBreak: "Años que planea tomarse para criar a su familia",
+      lInit: "Dinero que ya tiene ahorrado para la jubilación, o que planea depositar para abrir su cuenta",
+      lMonth: "Cuánto ahorrará cada mes",
+      hMonth: "Muchos empleadores también aportan dinero a su cuenta. Si el suyo lo hace, inclúyalo aquí.",
+      hBreak: "La vida pasa. Durante este tiempo deja de aportar dinero, pero lo que ya ahorró sigue trabajando para usted.",
+      hBreakAt: function(a,b){ return "Suponemos que es de los " + a + " a los " + b + " años. Durante ese tiempo deja de aportar, pero lo que ya ahorró sigue trabajando para usted."; },
+      none: "Ninguno",
+      years: function(n){ return n + (n === 1 ? " año" : " años"); },
+      ratesH: "¿Cuánto ganan normalmente las cuentas de TIAA?",
+      rTradDs: "Una opción estable con un mínimo garantizado que no pierde valor cuando baja el mercado. Tasa garantizada de 3.00% para un tipo de contrato hasta feb. de 2026.",
+      rLifeDs: "Un fondo con “fecha objetivo” para personas que se jubilan alrededor de 2040. Invierte en el mercado, así que sube y baja. Alrededor de 7.95% al año en promedio durante los 10 años hasta 2022.",
+      lGrowth: "¿Qué tan bien cree que le irá al mercado durante su carrera?",
+      low: "Bajo", med: "Medio", high: "Alto",
+      about4: "alrededor de 4% al año", about6: "alrededor de 6% al año", about8: "alrededor de 8% al año",
+      hGrowth: "¿No sabe cuál elegir? Elija Medio. Los mercados tienen años buenos y malos, así que estos son promedios a largo plazo.",
+      sContrib: "Dinero que aportó", sGrowth: "Extra por crecimiento",
+      sTotal: function(a){ return "Lo que tendría a los " + a; },
+      lgBreak: "Tiempo con la familia",
+      chartAria: "Gráfica de ahorros por edad, dividida en dinero aportado y crecimiento",
+      age: function(a){ return a + " años"; },
+      tipIn: "aportado", tipGrowth: "crecimiento",
+      insEmpty: "Agregue algo de ahorro arriba para ver lo que podría construir.",
+      insPerDollar: function(x){ return "Por cada <strong>$1</strong> que aporta, tendría alrededor de <strong>$" + x + "</strong> al jubilarse."; },
+      insCross: function(a){ return " A los <strong>" + a + "</strong> años, lo que ha ganado su dinero es más que todo lo que usted aportó."; },
+      insBreak: function(n, cost){ return " Sus " + STR.es.years(n) + " con la familia costaron alrededor de <strong>" + cost + "</strong> al jubilarse, pero sus ahorros siguieron creciendo todo ese tiempo."; },
+      insLegacy: " Eso es seguridad para usted, libertad en sus decisiones y una base para su familia.",
+
+      gH: "Adivine el total",
+      gSub: "Cinco mujeres, cinco historias de ahorro. Adivine cuánto construyó cada una. ¡La mayoría se queda corta!",
+      round: function(n,t){ return "Ronda " + n + " / " + t; },
+      pts: function(n){ return n + " pts"; },
+      streak: function(n){ return "Racha " + n; },
+      careers: ["enfermera","maestra","investigadora","bibliotecaria","profesora","trabajadora social","técnica de laboratorio","médica","consejera escolar","curadora de museo"],
+      growthWord: {4:"bajo", 6:"medio", 8:"alto"},
+      gQ: function(m,y,g,r){ return "Ahorra <em>" + m + " al mes</em> durante <em>" + y + " años</em>, y el mercado crece a un ritmo <em>" + g + "</em> (alrededor de " + r + "% al año). ¿Cuánto construye?"; },
+      gC: "Dinero que ella aportó",
+      gRight: "¡Correcto! +100",
+      gRightStreak: function(n,p){ return "¡Correcto! " + n + " seguidas, +" + p; },
+      gLow: "No exactamente. ¡Su dinero creció más de lo que pensó!",
+      gHigh: "No exactamente. Es un poco alto.",
+      gLessonContrib: function(nm,x){ return "Eso es solo el dinero que " + nm + " aportó, como si nunca hubiera crecido. Con el tiempo, el crecimiento lo convirtió en <strong>" + x + "&times;</strong> esa cantidad."; },
+      gLesson: function(nm,c,t,x){ return nm + " aportó " + c + ". Como su dinero siguió ganando dinero, creció a " + t + ", <strong>" + x + "&times;</strong> lo que ahorró. Esa es la seguridad real que construyó para sí misma y para su familia."; },
+      gNext: "Siguiente ronda", gSee: "Ver mi puntaje",
+      gFinal: "Puntaje final", gAgain: "Jugar otra vez", gToCalc: "Construya su propio plan",
+      gPerfect: "¡Perfecto! Usted entiende cómo el tiempo construye patrimonio.",
+      gGood: "¡Buen trabajo! Tiene buen instinto para el crecimiento del ahorro.",
+      gTry: "A casi todos les sorprende cuánto puede crecer el dinero. Por eso es importante empezar temprano.",
+      gBest: function(n){ return " Mejor racha: " + n + "."; },
+
+      rH: "Empezar temprano vs. tarde: ¿quién construye más?",
+      rSub: "Ana empieza a ahorrar joven, ahorra unos años y luego para. Julia empieza más tarde, pero ahorra cada año hasta jubilarse. Haga su predicción y luego presione Carrera.",
+      rAnaH: "Ana empieza temprano", rJulH: "Julia empieza más tarde",
+      rStartsAt: "Empieza a ahorrar a los", rSavesFor: "Ahorra durante",
+      rAyrs: function(n,e){ return STR.es.years(n) + " (para a los " + e + ")"; },
+      rJLabel: "Ahorra cada año hasta los 67",
+      rJyrs: function(n){ return STR.es.years(n) + " de ahorro"; },
+      rAmt: "Cada una ahorra al mes", rGrowth: "¿Qué tan bien le va al mercado?",
+      rWho: "¿Quién tiene más a los 67?", rAge: "Edad", rGo: "Carrera hasta los 67",
+      rCalled: "¡Acertó! ", rSurprise: "¡Sorpresa! ",
+      rMore: function(nm,hi,lo){ return "<strong>" + nm + " tiene más</strong>: " + hi + " vs. " + lo + ". "; },
+      rPutIn: function(a,ay,j,jy){ return "Ana aportó " + a + " en " + STR.es.years(ay) + ". Julia aportó " + j + " en " + STR.es.years(jy) + ". "; },
+      rAWins: function(d){ return "Ana ahorró <strong>" + d + " menos</strong> y aun así salió adelante, porque su dinero tuvo más tiempo para crecer."; },
+      rJWins: function(a,j){ return "El ahorro constante de Julia dio frutos. Pero mire cuánto creció cada dólar de Ana: <strong>" + a + "&times;</strong> vs. <strong>" + j + "&times;</strong> de Julia. Empezar temprano es poderoso, y nunca es tarde para empezar."; },
+      rTie: "Mientras más tiempo tenga su dinero, más crece.",
+
+      f1: "<strong>Solo con fines ilustrativos y educativos.</strong> Estos ejemplos son hipotéticos, suponen el mismo crecimiento cada año y no reflejan ninguna inversión específica, comisiones, impuestos ni inflación. Los resultados reales variarán y podrían ser menores. El rendimiento pasado no garantiza resultados futuros. Esta herramienta no es asesoría de inversión.",
+      by1: "Un proyecto estudiantil de",
+      by2: "para",
+      notice: "<strong>No es un producto oficial de TIAA.</strong> Team XI no está afiliado, respaldado ni relacionado con TIAA. Los nombres y logotipos de TIAA pertenecen a sus dueños y se usan aquí solo con fines educativos. Esta herramienta se creó como parte de un proyecto de clase en la Yale School of Management.",
+      f2: "<strong>Sobre las cifras de TIAA:</strong> Las tasas de TIAA Traditional se declaran cada año y varían según el contrato y la fecha en que se aportó el dinero; el 3.00% indicado es una tasa garantizada para un tipo de contrato (RCP) hasta el 28 de febrero de 2026. La cifra del Lifecycle 2040 Fund es el rendimiento anual promedio de la Retirement Class durante los 10 años terminados el 31 de diciembre de 2022, según el prospecto del fondo ante la SEC. Consulte tiaa.org o el estado de cuenta de su plan para ver las tasas actuales."
+    }
+  };
+
+  var lang = "en";
+  var T = STR.en;
+  try{
+    var saved = localStorage.getItem("tiaa-lang");
+    if(saved === "en" || saved === "es") lang = saved;
+    else if(/^es\b/i.test(navigator.language || "")) lang = "es";
+  }catch(e){}
+
+  function applyStatic(){
+    T = STR[lang];
+    document.documentElement.lang = lang;
+    document.title = T.title;
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      el.innerHTML = T[el.dataset.i18n];
+    });
+    $("chart").setAttribute("aria-label", T.chartAria);
+    var es = lang === "es";
+    $("lang").setAttribute("aria-checked", es);
+    $("lang-en").classList.toggle("on", !es);
+    $("lang-es").classList.toggle("on", es);
+  }
+  function setLang(l){
+    lang = l;
+    try{ localStorage.setItem("tiaa-lang", l); }catch(e){}
+    applyStatic();
+    updateCalc();
+    updateRaceLabels(true);
+    renderGame();
+    renderRaceResult();
+  }
+  $("lang").addEventListener("click", function(){ setLang(lang === "en" ? "es" : "en"); });
+
+  /* Month-by-month simulation. Savings are added at the end of each month;
+     growth is credited monthly. skipYear(y) returns true for years with no saving. */
+  function simulate(initial, monthly, ratePct, years, skipYear){
+    var mRate = ratePct/100/12;
+    var bal = initial, contrib = initial;
+    var rows = [{year:0, balance:bal, contrib:contrib}];
+    for(var y=1; y<=years; y++){
+      var saving = !(skipYear && skipYear(y-1));
+      for(var m=0; m<12; m++){
+        bal = bal*(1+mRate) + (saving ? monthly : 0);
+        if(saving) contrib += monthly;
+      }
+      rows.push({year:y, balance:bal, contrib:contrib});
+    }
+    return rows;
+  }
+
+  /* Low / Medium / High picker */
+  function segment(el, onChange){
+    var btns = el.querySelectorAll("button");
+    btns.forEach(function(b, i){
+      b.addEventListener("click", function(){ set(b); });
+      b.addEventListener("keydown", function(e){
+        if(e.key === "ArrowRight" || e.key === "ArrowLeft"){
+          e.preventDefault();
+          var n = btns[(i + (e.key === "ArrowRight" ? 1 : btns.length-1)) % btns.length];
+          n.focus(); set(n);
+        }
+      });
+    });
+    function set(b){
+      btns.forEach(function(x){ x.setAttribute("aria-checked", x === b); x.tabIndex = x === b ? 0 : -1; });
+      onChange();
+    }
+    btns.forEach(function(x){ x.tabIndex = x.getAttribute("aria-checked") === "true" ? 0 : -1; });
+    return function(){ return +el.querySelector('[aria-checked="true"]').dataset.rate; };
+  }
+
+  /* ---------------- Tabs ---------------- */
+  var tabs = document.querySelectorAll(".tab");
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute("aria-selected", on);
+      $(t.getAttribute("aria-controls")).classList.toggle("active", on);
+    });
+    if(tab.id === "t-calc") drawChart();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener("click", function(){ selectTab(t); });
+    t.addEventListener("keydown", function(e){
+      if(e.key === "ArrowRight" || e.key === "ArrowLeft"){
+        var next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length-1)) % tabs.length];
+        next.focus(); selectTab(next);
+      }
+    });
+  });
+
+  /* ---------------- Calculator ---------------- */
+  var cStart=$("c-start"), cRetire=$("c-retire"), cBreak=$("c-break"), cInit=$("c-init"), cMonth=$("c-month");
+  var calcRate = segment($("c-growth"), function(){ updateCalc(); });
+  var canvas=$("chart"), ctx=canvas.getContext("2d"), tip=$("tip");
+  var data=[], plot={}, startAge=25, brk=null;
+
+  function updateCalc(){
+    if(+cRetire.value <= +cStart.value) cRetire.value = Math.min(75, +cStart.value + 1);
+    startAge = +cStart.value;
+    var years = +cRetire.value - startAge;
+    var breakYrs = Math.min(+cBreak.value, years);
+    // family time is assumed to begin 5 years after you start working
+    var bStart = Math.min(5, years - breakYrs);
+    brk = breakYrs > 0 ? {from:bStart, to:bStart + breakYrs} : null;
+
+    $("o-start").textContent = startAge;
+    $("o-retire").textContent = cRetire.value;
+    $("o-break").textContent = +cBreak.value === 0 ? T.none : T.years(+cBreak.value);
+    $("h-break").textContent = brk ? T.hBreakAt(startAge + brk.from, startAge + brk.to) : T.hBreak;
+    $("o-init").textContent = money(+cInit.value);
+    $("o-month").textContent = money(+cMonth.value);
+    $("lg-break").hidden = !brk;
+
+    var rate = calcRate();
+    data = simulate(+cInit.value, +cMonth.value, rate, years,
+      brk ? function(y){ return y >= brk.from && y < brk.to; } : null);
+    var last = data[data.length-1];
+    $("s-contrib").textContent = money(last.contrib);
+    $("s-growth").textContent = money(last.balance - last.contrib);
+    $("s-total-k").textContent = T.sTotal(cRetire.value);
+    $("s-total").textContent = money(last.balance);
+
+    var cross = data.find(function(d){ return d.year > 0 && d.balance - d.contrib > d.contrib; });
+    var msg;
+    if(last.balance <= 0){
+      msg = T.insEmpty;
+    } else {
+      var perDollar = last.contrib > 0 ? last.balance/last.contrib : 0;
+      msg = T.insPerDollar(perDollar.toFixed(2));
+      if(cross) msg += T.insCross(startAge + cross.year);
+      if(brk){
+        var noBreak = simulate(+cInit.value, +cMonth.value, rate, years)[years].balance;
+        msg += T.insBreak(breakYrs, money(noBreak - last.balance));
+      }
+      msg += T.insLegacy;
+    }
+    $("insight").innerHTML = msg;
+    drawChart();
+  }
+
+  function drawChart(hoverIdx){
+    var w = canvas.clientWidth; if(!w) return;
+    var h = canvas.clientHeight || 300;
+    var dpr = window.devicePixelRatio || 1;
+    if(canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)){
+      canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);
+    }
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+
+    var pad = {l:56, r:26, t:12, b:28};
+    var pw = w - pad.l - pad.r, ph = h - pad.t - pad.b;
+    var maxV = Math.max.apply(null, data.map(function(d){return d.balance;})) || 1;
+    var step = niceStep(maxV/4);
+    var top = Math.ceil(maxV/step)*step;
+    var n = data.length - 1 || 1;
+    var x = function(i){ return pad.l + pw*i/n; };
+    var y = function(v){ return pad.t + ph - ph*v/top; };
+    plot = {x:x, pad:pad, pw:pw, n:n, y:y};
+
+    if(brk){
+      ctx.fillStyle = cssVar("--break");
+      ctx.fillRect(x(brk.from), pad.t, x(brk.to) - x(brk.from), ph);
+    }
+
+    ctx.font = "12px -apple-system,Segoe UI,Roboto,Arial,sans-serif";
+    ctx.fillStyle = cssVar("--muted"); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1;
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for(var v=0; v<=top+1e-6; v+=step){
+      var yy = Math.round(y(v))+.5;
+      ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(w-pad.r, yy); ctx.stroke();
+      ctx.fillText(short(v), pad.l-8, yy);
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    var xStep = Math.max(1, Math.ceil(n/Math.min(8, Math.floor(pw/56))));
+    for(var i=0;i<=n;i+=xStep){ ctx.fillText(T.age(startAge + i), x(i), h-pad.b+8); }
+
+    area(function(d){return d.contrib;}, function(){return 0;}, cssVar("--navy-2"));
+    area(function(d){return d.balance;}, function(d){return d.contrib;}, cssVar("--teal"));
+
+    ctx.beginPath();
+    data.forEach(function(d,i){ i ? ctx.lineTo(x(i), y(d.balance)) : ctx.moveTo(x(i), y(d.balance)); });
+    ctx.strokeStyle = cssVar("--navy"); ctx.lineWidth = 2; ctx.stroke();
+
+    if(hoverIdx != null && data[hoverIdx]){
+      var d = data[hoverIdx], hx = x(hoverIdx);
+      ctx.strokeStyle = cssVar("--navy"); ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(hx, pad.t); ctx.lineTo(hx, pad.t+ph); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = "#fff"; ctx.strokeStyle = cssVar("--navy"); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(hx, y(d.balance), 5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+
+    function area(topFn, botFn, color){
+      ctx.beginPath();
+      data.forEach(function(d,i){ i ? ctx.lineTo(x(i), y(topFn(d))) : ctx.moveTo(x(i), y(topFn(d))); });
+      for(var j=data.length-1;j>=0;j--) ctx.lineTo(x(j), y(botFn(data[j])));
+      ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+    }
+  }
+  function niceStep(raw){
+    var p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+    var f = raw/p;
+    return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;
+  }
+
+  canvas.addEventListener("mousemove", function(e){
+    var rect = canvas.getBoundingClientRect();
+    var i = Math.round((e.clientX - rect.left - plot.pad.l)/plot.pw*plot.n);
+    if(i<0 || i>plot.n){ hideTip(); return; }
+    var d = data[i];
+    drawChart(i);
+    tip.innerHTML = "<div>" + T.age(startAge + d.year) + "</div><b>" + money(d.balance) + "</b><div style='opacity:.8'>" +
+      money(d.contrib) + " " + T.tipIn + " &middot; " + money(d.balance-d.contrib) + " " + T.tipGrowth + "</div>";
+    tip.style.left = Math.min(Math.max(plot.x(i), 90), rect.width-90) + "px";
+    tip.style.top = plot.y(d.balance) + "px";
+    tip.style.opacity = 1;
+  });
+  canvas.addEventListener("mouseleave", hideTip);
+  function hideTip(){ tip.style.opacity = 0; drawChart(); }
+
+  [cStart,cRetire,cBreak,cInit,cMonth].forEach(function(el){ el.addEventListener("input", updateCalc); });
+  window.addEventListener("resize", function(){ drawChart(); });
+
+  /* ---------------- Guess the total game ---------------- */
+  var ROUNDS = 5;
+  var names = ["María","Sofía","Lucía","Valentina","Camila","Isabel","Gabriela","Carmen","Elena","Rosa","Ximena","Daniela"];
+  var g;
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function rnd(min,max,step){ return min + step*Math.floor(Math.random()*((max-min)/step+1)); }
+  function roundTo(v){
+    var mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
+    return Math.round(v/mag)*mag;
+  }
+
+  function newRound(){
+    g.round++;
+    var name; do{ name = pick(names); } while(g.used[name] && Object.keys(g.used).length < names.length);
+    g.used[name] = 1;
+    var monthly = rnd(100, 800, 50);
+    var rate = pick([4,6,8]);
+    var years = rnd(15, 40, 5);
+    var rows = simulate(0, monthly, rate, years);
+    var last = rows[rows.length-1];
+    var correct = last.balance, contrib = last.contrib;
+
+    // Wrong answers based on common mistakes: no growth at all, or too little growth
+    var simple = contrib + contrib*(rate/100)*years/2;
+    var opts = [correct, contrib, simple, correct*(1.55 + Math.random()*0.35)].map(roundTo);
+    for(var i=1;i<opts.length;i++){
+      for(var j=0;j<i;j++){
+        if(Math.abs(opts[i]-opts[j])/opts[j] < 0.12) opts[i] = roundTo(opts[i]*1.3);
+      }
+    }
+    g.cur = {
+      name:name, career:Math.floor(Math.random()*STR.en.careers.length),
+      monthly:monthly, rate:rate, years:years,
+      value:opts[0], contrib:contrib, growth:correct-contrib,
+      guess:null, ok:null, gained:0
+    };
+    var shuffled = opts.map(function(v,k){return {v:v, ok:k===0};}).sort(function(){return Math.random()-.5;});
+
+    var box = $("g-choices"); box.innerHTML = "";
+    shuffled.forEach(function(o){
+      var b = document.createElement("button");
+      b.className = "choice"; b.textContent = money(o.v);
+      b.dataset.ok = o.ok ? "1" : "";
+      b.dataset.v = o.v;
+      b.addEventListener("click", function(){ answer(b); });
+      box.appendChild(b);
+    });
+    $("g-reveal").classList.remove("show");
+    $("g-bar-c").style.width = 0; $("g-bar-g").style.width = 0;
+    renderGame();
+  }
+
+  function answer(btn){
+    var c = g.cur;
+    c.ok = btn.dataset.ok === "1";
+    c.guess = +btn.dataset.v;
+    document.querySelectorAll("#g-choices .choice").forEach(function(b){
+      b.disabled = true;
+      if(b.dataset.ok === "1") b.classList.add("right");
+    });
+    if(!c.ok) btn.classList.add("wrong");
+    if(c.ok){ g.streak++; c.gained = 100 + (g.streak-1)*50; g.score += c.gained; } else { g.streak = 0; }
+    c.streakAt = g.streak;
+    g.best = Math.max(g.best, g.streak);
+    renderGame();
+    $("g-reveal").classList.add("show");
+    var total = c.contrib + c.growth;
+    requestAnimationFrame(function(){
+      $("g-bar-c").style.width = (c.contrib/total*100) + "%";
+      $("g-bar-g").style.width = (c.growth/total*100) + "%";
+    });
+    $("g-next").focus({preventScroll:true});
+  }
+
+  // Writes every piece of game text from state, so it can be redrawn in either language
+  function renderGame(){
+    if(!g || !g.cur) return;
+    var c = g.cur;
+    $("g-round").textContent = T.round(g.round, ROUNDS);
+    $("g-score").textContent = T.pts(g.score);
+    $("g-streak").textContent = T.streak(g.streak);
+    $("g-who").textContent = c.name + ", " + T.careers[c.career];
+    $("g-q").innerHTML = T.gQ(money(c.monthly), c.years, T.growthWord[c.rate], c.rate);
+    if(c.guess != null){
+      var v = $("g-verdict");
+      v.className = "verdict " + (c.ok ? "ok" : "no");
+      v.textContent = c.ok ? (c.streakAt > 1 ? T.gRightStreak(c.streakAt, c.gained) : T.gRight)
+        : (c.guess < c.value ? T.gLow : T.gHigh);
+      var total = c.contrib + c.growth, mult = (total/c.contrib).toFixed(1);
+      $("g-c").textContent = money(c.contrib);
+      $("g-g").textContent = money(c.growth);
+      $("g-lesson").innerHTML = Math.abs(c.guess - roundTo(c.contrib)) < 1
+        ? T.gLessonContrib(c.name, mult)
+        : T.gLesson(c.name, money(c.contrib), money(total), mult);
+      $("g-next").textContent = g.round >= ROUNDS ? T.gSee : T.gNext;
+    }
+    if(g.done){
+      var max = 0; for(var i=0;i<ROUNDS;i++) max += 100 + i*50;
+      var msg = g.score === max ? T.gPerfect : g.score >= max*0.5 ? T.gGood : T.gTry;
+      $("g-finalscore").textContent = g.score;
+      $("g-finalmsg").textContent = msg + T.gBest(g.best);
+    }
+  }
+
+  $("g-next").addEventListener("click", function(){
+    if(g.round >= ROUNDS){
+      g.done = true;
+      $("g-play").hidden = true; $("g-final").hidden = false;
+      renderGame();
+    } else { newRound(); }
+  });
+  function resetGame(){
+    g = {round:0, score:0, streak:0, best:0, cur:null, used:{}, done:false};
+    $("g-play").hidden = false; $("g-final").hidden = true;
+    newRound();
+  }
+  $("g-again").addEventListener("click", resetGame);
+  $("g-tocalc").addEventListener("click", function(){ selectTab($("t-calc")); });
+
+  /* ---------------- Start early vs. start late race ---------------- */
+  var RET = 67;
+  var rA=$("r-a-start"), rAy=$("r-a-yrs"), rJ=$("r-j-start"), rAmt=$("r-amt");
+  var raceRate = segment($("r-growth"), function(){ resetRace(); });
+  var prediction = null, racing = null, raceDone = null;
+
+  function raceSeries(){
+    var mRate = raceRate()/100/12;
+    var amt = +rAmt.value;
+    var aStart=+rA.value, aEnd=aStart + (+rAy.value), jStart=+rJ.value;
+    var startAge = Math.min(aStart, jStart);
+    var a=0, j=0, aIn=0, jIn=0, out=[];
+    out.push({age:startAge, a:0, j:0});
+    for(var age=startAge; age<RET; age++){
+      for(var m=0;m<12;m++){
+        a *= 1+mRate; j *= 1+mRate;
+        if(age>=aStart && age<aEnd){ a += amt; aIn += amt; }
+        if(age>=jStart){ j += amt; jIn += amt; }
+      }
+      out.push({age:age+1, a:a, j:j});
+    }
+    return {rows:out, aIn:aIn, jIn:jIn};
+  }
+
+  function updateRaceLabels(keepResult){
+    if(+rA.value + (+rAy.value) > RET) rAy.value = RET - rA.value;
+    $("o-a-start").textContent = rA.value;
+    $("o-a-yrs").textContent = T.rAyrs(+rAy.value, +rA.value + (+rAy.value));
+    $("o-j-start").textContent = rJ.value;
+    $("o-j-yrs").textContent = T.rJyrs(RET - rJ.value);
+    $("o-amt").textContent = money(+rAmt.value);
+    if(keepResult !== true) resetRace();
+  }
+  function resetRace(){
+    if(racing) cancelAnimationFrame(racing); racing = null;
+    raceDone = null;
+    $("r-fill-a").style.width = 0; $("r-fill-a").textContent = "";
+    $("r-fill-j").style.width = 0; $("r-fill-j").textContent = "";
+    $("r-age").textContent = Math.min(+rA.value, +rJ.value);
+    $("r-result").hidden = true;
+  }
+
+  document.querySelectorAll("#r-predict [data-pick]").forEach(function(b){
+    b.addEventListener("click", function(){
+      prediction = b.dataset.pick;
+      document.querySelectorAll("#r-predict [data-pick]").forEach(function(x){
+        x.classList.toggle("ghost", x !== b);
+      });
+    });
+  });
+
+  $("r-go").addEventListener("click", function(){
+    resetRace();
+    var s = raceSeries(), rows = s.rows;
+    var final = rows[rows.length-1];
+    var max = Math.max(final.a, final.j, 1);
+    var dur = Math.max(2200, rows.length*90), t0 = null;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function frame(ts){
+      if(!t0) t0 = ts;
+      var p = reduce ? 1 : Math.min(1, (ts-t0)/dur);
+      var fi = p*(rows.length-1), i0 = Math.floor(fi), i1 = Math.min(i0+1, rows.length-1), f = fi-i0;
+      var a = rows[i0].a + (rows[i1].a-rows[i0].a)*f;
+      var j = rows[i0].j + (rows[i1].j-rows[i0].j)*f;
+      setFill($("r-fill-a"), a, max); setFill($("r-fill-j"), j, max);
+      $("r-age").textContent = rows[Math.round(fi)].age;
+      if(p<1) racing = requestAnimationFrame(frame);
+      else {
+        racing = null;
+        raceDone = {final:final, s:s, ay:+rAy.value, jy:RET - rJ.value, pred:prediction};
+        renderRaceResult();
+      }
+    }
+    racing = requestAnimationFrame(frame);
+  });
+  function setFill(el, v, max){
+    el.style.width = (v/max*100) + "%";
+    el.textContent = v/max > 0.22 ? money(v) : "";
+  }
+  function renderRaceResult(){
+    if(!raceDone) return;
+    var final = raceDone.final, s = raceDone.s;
+    var winner = final.a > final.j ? "A" : "J";
+    var html = raceDone.pred ? (raceDone.pred === winner ? T.rCalled : T.rSurprise) : "";
+    html += T.rMore(winner === "A" ? "Ana" : "Julia", money(Math.max(final.a, final.j)), money(Math.min(final.a, final.j)));
+    html += T.rPutIn(money(s.aIn), raceDone.ay, money(s.jIn), raceDone.jy);
+    if(winner === "A") html += T.rAWins(money(s.jIn - s.aIn));
+    else if(s.aIn < s.jIn) html += T.rJWins((final.a/s.aIn).toFixed(1), (final.j/s.jIn).toFixed(1));
+    else html += T.rTie;
+    $("r-result").innerHTML = html; $("r-result").hidden = false;
+  }
+
+  [rA,rAy,rJ,rAmt].forEach(function(el){ el.addEventListener("input", updateRaceLabels); });
+
+  /* ---------------- Start ---------------- */
+  applyStatic();
+  updateCalc();
+  updateRaceLabels();
+  resetGame();
+})();
+</script>
+</body>
+</html>
