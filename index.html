@@ -36,10 +36,10 @@
   .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
 
   /* Header */
-  header{background:#fff;color:var(--navy);border-bottom:1px solid var(--line)}
+  header{background:#f9fafb;color:var(--navy);border-bottom:1px solid var(--line)}
   .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:76px}
   .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--navy);min-width:0}
-  .tiaa-logo{height:44px;width:auto;flex:none;display:block}
+  .tiaa-logo{height:48px;width:auto;flex:none;display:block}
   .brand small{font-size:13px;color:var(--muted);border-left:1px solid var(--line);padding-left:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* Language switch */
@@ -181,9 +181,9 @@
   footer{color:var(--muted);font-size:12px;padding:8px 0 40px}
   .credits{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:18px;padding-top:18px}
   .credits .by{font-size:12px;color:var(--muted)}
-  .credits svg{display:block;width:auto}
-  .teamxi{height:44px}
-  .yalesom{height:34px}
+  .credits img{display:block;width:auto}
+  .teamxi{height:46px;border-radius:4px}
+  .yalesom{height:64px}
   .notice{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:12.5px}
   footer p{margin:6px 0;max-width:860px}
 
@@ -212,17 +212,7 @@
 <header>
   <div class="wrap bar">
     <a class="brand" href="#" aria-label="TIAA">
-      <svg class="tiaa-logo" viewBox="0 0 290 76" role="img" aria-label="TIAA">
-        <path fill="#2f5bea" d="M26 6H62Q72 6 72 16V24H32V46H14V18Q14 6 26 6Z"/>
-        <path fill="#16a58a" d="M54 24H72V58Q72 70 60 70H54Z"/>
-        <path fill="#0d1b5c" d="M14 46H32V52H54V70H26L5 55Q1 50 8 47Z"/>
-        <g fill="#0d1b5c">
-          <rect x="92" y="12" width="48" height="13"/><rect x="109" y="12" width="14" height="56"/>
-          <rect x="148" y="12" width="14" height="56"/>
-          <path fill-rule="evenodd" d="M168 68L188 12H204L224 68H209L204 54H188L183 68ZM192 42H200L196 29Z"/>
-          <path fill-rule="evenodd" d="M226 68L246 12H262L282 68H267L262 54H246L241 68ZM250 42H258L254 29Z"/>
-        </g>
-      </svg>
+      <img class="tiaa-logo" src="images/tiaa-logo.png" alt="TIAA" width="1252" height="386">
       <small data-i18n="brandSub"></small>
     </a>
     <button class="lang" id="lang" role="switch" aria-checked="false" aria-label="Español">
@@ -424,24 +414,9 @@
     <p data-i18n="f2"></p>
     <div class="credits">
       <span class="by" data-i18n="by1"></span>
-      <svg class="teamxi" viewBox="0 0 380 90" role="img" aria-label="Ctrl Alt Win, Team 11">
-        <rect width="380" height="90" rx="6" fill="#1d2b4c"/>
-        <g fill="#e9dfc8" font-family="Georgia,'Times New Roman',serif" text-anchor="middle">
-          <text x="150" y="47" font-size="32" letter-spacing="2">CTRL·ALT·WIN</text>
-          <text x="150" y="74" font-size="13" letter-spacing="4">TEAM 11</text>
-        </g>
-        <g stroke="#e9dfc8" stroke-width="1.5"><line x1="36" y1="69" x2="108" y2="69"/><line x1="192" y1="69" x2="264" y2="69"/></g>
-        <path d="M306 12H364V50Q364 70 335 80Q306 70 306 50Z" fill="none" stroke="#e9dfc8" stroke-width="3"/>
-        <text x="335" y="58" font-family="Georgia,'Times New Roman',serif" font-size="32" fill="#e9dfc8" text-anchor="middle">XI</text>
-      </svg>
+      <img class="teamxi" src="images/team-xi.png" alt="Ctrl Alt Win, Team 11" width="624" height="170">
       <span class="by" data-i18n="by2"></span>
-      <svg class="yalesom" viewBox="0 0 385 64" role="img" aria-label="Yale School of Management">
-        <path d="M4 4H48V36Q48 54 26 62Q4 54 4 36Z" fill="#0f2c5c"/>
-        <path d="M11 9H25V22H11ZM27 9H41V22H27Z" fill="#fff"/>
-        <g fill="#7f9cc4"><path d="M26 27L31 33L26 39L21 33Z"/><path d="M16 33L21 39L16 45L11 39Z" opacity=".8"/><path d="M36 33L41 39L36 45L31 39Z" opacity=".8"/><path d="M26 41L31 47L26 53L21 47Z"/></g>
-        <text x="60" y="44" font-family="Georgia,'Times New Roman',serif" font-size="34" fill="#0f2c5c">Yale</text>
-        <text x="136" y="42" font-family="Georgia,'Times New Roman',serif" font-size="17" letter-spacing="1" fill="#7f9cc4">SCHOOL OF MANAGEMENT</text>
-      </svg>
+      <img class="yalesom" src="images/yale-som.png" alt="Yale School of Management" width="2000" height="987">
     </div>
     <p class="notice" data-i18n="notice"></p>
   </footer>
